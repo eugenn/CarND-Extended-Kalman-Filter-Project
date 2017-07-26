@@ -74,9 +74,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 // Universal update Kalman Filter step. Equations from the lectures
 void KalmanFilter::KF(const VectorXd &y) {
     MatrixXd Ht = H_.transpose();
-    MatrixXd S = H_ * P_ * Ht + R_;
+    MatrixXd PH_ = P_ * Ht;
+    MatrixXd S = H_ * PH_ + R_;
     MatrixXd Si = S.inverse();
-    MatrixXd K = P_ * Ht * Si;
+    MatrixXd K = PH_ * Si;
 
     // New state
     x_ = x_ + (K * y);
