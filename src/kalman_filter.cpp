@@ -1,5 +1,6 @@
 #include "kalman_filter.h"
 #include <iostream>
+#include <math.h>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -34,10 +35,6 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-    double z_ro = z[0];
-    double z_theta = z[1];
-    double z_ro_dot = z[2];
-
     if (z[0] < 0.001) {
         return;
     }
@@ -56,13 +53,11 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     VectorXd y = z - z_pred;
 
     // Adjust angle representation to keep between -pi and pi.
-    double pi = 3.14159265358;
-
-    while (y[1] > pi) {
-        y[1] -= 2 * pi;
+    while (y[1] > M_PI) {
+        y[1] -= 2 * M_PI;
     }
-    while (y[1] < -pi) {
-        y[1] += 2 * pi;
+    while (y[1] < -M_PI) {
+        y[1] += 2 * M_PI;
     }
 
     double c = (vx * py - vy * px) / pow(pxy, 1.5);
